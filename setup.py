@@ -24,7 +24,7 @@ setup(
                              'r', 'utf-8').read(),
         license='MIT, see LICENSE file.',
         install_requires=requires,
-        packages=find_packages(),
+        packages=find_packages(exclude=("tests",)),
         include_package_data=True,
         zip_safe=False,
         classifiers=['Topic :: Utilities',
