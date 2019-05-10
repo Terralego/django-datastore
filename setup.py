@@ -10,11 +10,11 @@ requires = ['Django>=2.0,<2.1', 'djangorestframework>=3.7,<3.8', 'python-magic>=
 
 setup(
         name='django-rest-datastore',
-        version='0.1',
+        version='0.1.dev0',
         author='Makina Corpus',
         author_email='terralego-pypi@makina-corpus.com',
-        url='https://github.com/makinacorpus/django-rest-datastore',
-        download_url="http://pypi.python.org/pypi/django-datastore/",
+        url='https://github.com/makinacorpus/django-datastore',
+        download_url="",
         description="",
         long_description=codecs.open(
             os.path.join(
@@ -22,7 +22,7 @@ setup(
                          codecs.open(
                              os.path.join(file_setup, 'CHANGES'),
                              'r', 'utf-8').read(),
-        license='LPGL, see LICENSE file.',
+        license='MIT, see LICENSE file.',
         install_requires=requires,
         packages=find_packages(),
         include_package_data=True,
