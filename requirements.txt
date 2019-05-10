@@ -1,0 +1,5 @@
+Django>=2.0,<2.1.0  # NOT LTS
+djangorestframework>=3.7,<3.8
+python-magic>=0.4,<0.5
+factory_boy
+psycopg2>=2.7,<2.8 --no-binary psycopg2
