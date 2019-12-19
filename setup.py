@@ -32,10 +32,19 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Framework :: Django :: 2.2',
+        'Framework :: Django :: 3.0',
     ],
     install_requires=[
-        'django>=2.2,<3.0',
+        'django>=2.2',
+        'psycopg2',  # postgres is required to use JSONField
         'djangorestframework',
         'python-magic>=0.4,<0.5',
     ],
+    extras_require={
+        'dev': [
+            'flake8',
+            'coverage',
+        ]
+    }
 )

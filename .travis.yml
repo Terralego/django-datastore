@@ -1,6 +1,9 @@
 dist: bionic
+
 sudo: required
+
 language: python
+
 python:
 - '3.6'
 - '3.7'
@@ -9,6 +12,7 @@ python:
 env:
   matrix:
   - DJANGO_VERSION=2.2.*
+  - DJANGO_VERSION=3.0.*
   - DJANGO_VERSION=dev
 
 services:
@@ -32,14 +36,18 @@ before_script:
   postgres
 - psql -c "ALTER USER travis_ci_test WITH SUPERUSER;" -U postgres
 - psql -c 'CREATE DATABASE travis_ci_test WITH OWNER travis_ci_test;' -U postgres
+
 after_failure:
 - pip freeze
+
 script:
 - coverage run ./manage.py test
 - codecov
+
 jobs:
   allow_failures:
     - env: DJANGO_VERSION=dev
+
   include:
   - stage: lint
     install:
@@ -47,6 +55,7 @@ jobs:
     before_script: skip
     script:
     - flake8 datastore
+
   - stage: deploy
     install: skip
     before_script: skip

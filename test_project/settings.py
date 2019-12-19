@@ -12,7 +12,6 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
@@ -23,7 +22,6 @@ SECRET_KEY = '37r=l^!c^1-7o8z2luc%a1x&)jt^9v+ockis0ql7k_y*lm555('
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost']
-
 
 # Application definition
 
@@ -37,6 +35,16 @@ INSTALLED_APPS = (
     'datastore',
     'rest_framework',
 )
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
 
 ROOT_URLCONF = 'test_project.urls'
 
@@ -62,18 +70,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'test_project.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '',
+        'NAME': os.getenv('POSTGRES_DB', 'travis_ci_test'),
+        'USER': os.getenv('POSTGRES_USER', 'travis_ci_test'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'travis_ci_test'),
+        'HOST': os.getenv('POSTGRES_HOST', '127.0.0.1'),
     }
 }
 
@@ -90,7 +96,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/

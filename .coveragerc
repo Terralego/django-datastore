@@ -1,0 +1,7 @@
+[report]
+include = datastore/*
+omit = */migrations*
+
+ignore_errors = True
+skip_empty = True
+show_missing = true

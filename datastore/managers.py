@@ -1,6 +1,6 @@
 from django.db.models import Q, QuerySet
 
-from .models import DataStorePermission
+from . import models as ds_models
 
 
 class DataStoreQuerySet(QuerySet):
@@ -18,7 +18,9 @@ class DataStoreQuerySet(QuerySet):
         if perms:
             query_args['permission__in'] = perms
 
-        permissions = DataStorePermission.objects.filter(**query_args)
+        permissions = ds_models.DataStorePermission.objects.filter(
+            **query_args
+        )
         if not permissions:
             return Q(key=None)
 

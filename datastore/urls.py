@@ -6,6 +6,6 @@ app_name = 'datastore'
 
 router = routers.SimpleRouter()
 
-router.register(r'datastore', DataStoreViewSet, base_name='datastore')
+router.register(r'datastore', DataStoreViewSet, basename='datastore')
 
 urlpatterns = router.urls
