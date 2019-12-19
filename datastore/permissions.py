@@ -1,6 +1,6 @@
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 
-from datastore.models import DataStorePermission
+from .models import DataStorePermission
 
 
 class IsAuthenticatedAndDataStoreAllowed(IsAuthenticated):

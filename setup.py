@@ -1,34 +1,41 @@
-
 import os
 from setuptools import setup, find_packages
-import sys
 
-file_setup = os.path.abspath(os.path.dirname(__file__))
-import codecs
+HERE = os.path.abspath(os.path.dirname(__file__))
 
-requires = ['Django>=2.0,<2.1', 'djangorestframework>=3.7,<3.8', 'python-magic>=0.4,<0.5']
+README = open(os.path.join(HERE, 'README.md')).read()
+CHANGES = open(os.path.join(HERE, 'CHANGES.md')).read()
 
 setup(
-        name='django-rest-datastore',
-        version='0.1.dev0',
-        author='Makina Corpus',
-        author_email='terralego-pypi@makina-corpus.com',
-        url='https://github.com/makinacorpus/django-datastore',
-        download_url="",
-        description="",
-        long_description="",
-        license='MIT, see LICENSE file.',
-        install_requires=requires,
-        packages=find_packages(exclude=("tests",)),
-        include_package_data=True,
-        zip_safe=False,
-        classifiers=['Topic :: Utilities',
-                     'Natural Language :: English',
-                     'Operating System :: OS Independent',
-                     'Intended Audience :: Developers',
-                     'Environment :: Web Environment',
-                     'Framework :: Django',
-                     'License :: OSI Approved :: MIT License',
-                     'Programming Language :: Python :: 3.6',
-                     'Programming Language :: Python :: 3.7'],
+    name='django-datastore',
+    version=open(os.path.join(HERE, 'datastore', 'VERSION.md')).read().strip(),
+    include_package_data=True,
+    author='Makina Corpus',
+    author_email='terralego-pypi@makina-corpus.com',
+    description="Generic data store for Django Rest framework",
+    long_description=README + '\n\n' + CHANGES,
+    description_content_type="text/markdown",
+    long_description_content_type="text/markdown",
+    license="MIT, see LICENSE file.",
+    packages=find_packages(),
+    url='https://github.com/makinacorpus/django-datastore',
+    classifiers=[
+        'Environment :: Web Environment',
+        'Framework :: Django',
+        'Intended Audience :: Developers',
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+        'License :: OSI Approved :: MIT License',
+        'Natural Language :: English',
+        'Operating System :: OS Independent',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+    ],
+    install_requires=[
+        'django>=2.2,<3.0',
+        'djangorestframework',
+        'python-magic>=0.4,<0.5',
+    ],
 )

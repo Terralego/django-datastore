@@ -3,9 +3,9 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.status import HTTP_409_CONFLICT
 
-from datastore.models import DataStore
-from datastore.permissions import IsAuthenticatedAndDataStoreAllowed
-from datastore.serializers import DataStoreSerializer
+from .models import DataStore
+from .permissions import IsAuthenticatedAndDataStoreAllowed
+from .serializers import DataStoreSerializer
 
 
 class DataStoreViewSet(viewsets.ModelViewSet):
@@ -19,7 +19,7 @@ class DataStoreViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return DataStore.objects.get_datastores_for_user(self.request.user)
 
-    def update(self, request, key=None):
+    def update(self, request, key=None, *args, **kwargs):
         obj = self.get_object()
 
         serializer = self.get_serializer(obj, data={'value': request.data})
