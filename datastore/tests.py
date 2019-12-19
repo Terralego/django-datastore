@@ -1,19 +1,19 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.shortcuts import resolve_url
-from django.test import TestCase
 from django.urls import reverse
 from rest_framework.status import (
     HTTP_200_OK,
-    HTTP_401_UNAUTHORIZED,
     HTTP_403_FORBIDDEN,
 )
-from rest_framework.test import APIClient
-from terra_accounts.tests.factories import TerraUserFactory
+from rest_framework.test import APITestCase
 
 from .models import DataStore, DataStorePermission
 
+User = get_user_model()
 
-class DataStoreTestCase(TestCase):
+
+class DataStoreTestCase(APITestCase):
     def setUp(self):
 
         examples = [{
@@ -23,26 +23,23 @@ class DataStoreTestCase(TestCase):
             'key': 'test.data.new_store',
             'value': {}
         }, {
-            'key': 'prefix.dot.com',
+            'key': 'test.prefix.dot.com',
             'value': {}
         }]
 
         for example in examples:
             DataStore.objects.create(**example)
 
-        self.client = APIClient()
-        self.user = TerraUserFactory()
+        self.user = User.objects.create(username="bar")
         self.client.force_authenticate(user=self.user)
 
     def test_not_authenticated(self):
-        client = APIClient()
-        response = client.get(reverse('datastore:datastore-list'))
-        self.assertEqual(HTTP_401_UNAUTHORIZED, response.status_code)
+        self.client.force_authenticate()
+        response = self.client.get(reverse('datastore:datastore-list'))
+        self.assertEqual(HTTP_403_FORBIDDEN, response.status_code)
 
     def test_no_permission(self):
-        client = APIClient()
-        client.force_authenticate(user=self.user)
-        response = client.get(reverse('datastore:datastore-list'))
+        response = self.client.get(reverse('datastore:datastore-list'))
 
         self.assertEqual(HTTP_200_OK, response.status_code)
         self.assertEqual(0, response.json()['count'])
@@ -71,6 +68,7 @@ class DataStoreTestCase(TestCase):
         response = self.client.put(
             resolve_url('datastore:datastore-detail', ds.key),
             data={'value': test_value},
+            format='json',
         )
 
         self.assertEqual(HTTP_403_FORBIDDEN, response.status_code)
@@ -98,7 +96,8 @@ class DataStoreTestCase(TestCase):
         ds = DataStore.objects.get(key='test.prefix.dot.com')
         response = self.client.put(
             resolve_url('datastore:datastore-detail', ds.key),
-            data={'value': test_value},
+            data=test_value,
+            format='json',
         )
 
         self.assertEqual(HTTP_200_OK, response.status_code)
@@ -126,6 +125,7 @@ class DataStoreTestCase(TestCase):
         response = self.client.post(
             resolve_url('datastore:datastore-detail', prefix),
             data=test_value,
+            format='json',
         )
         self.assertEqual(response.status_code, HTTP_200_OK)
 
@@ -133,14 +133,14 @@ class DataStoreTestCase(TestCase):
         self.assertDictEqual(response.json(), test_value)
 
     def test_forbidden_create_item(self):
-        user = TerraUserFactory()
-        client = APIClient()
-        client.force_authenticate(user=user)
+        user = User.objects.create(username="foo")
+        self.client.force_authenticate(user=user)
 
         prefix = 'test.prefix.forbidden_creation'
-        response = client.post(
+        response = self.client.post(
             resolve_url('datastore:datastore-detail', prefix),
             data={'test_key': 'test value'},
+            format='json',
         )
         self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
         self.assertFalse(DataStore.objects.filter(key=prefix).exists())
@@ -162,11 +162,13 @@ class DataStoreTestCase(TestCase):
         response = self.client.post(
             resolve_url('datastore:datastore-detail', 'test.testprefix.blurp'),
             data=test_value,
+            format='json',
         )
         self.assertEqual(response.status_code, HTTP_200_OK)
 
         response = self.client.post(
             resolve_url('datastore:datastore-detail', 'test.forbiddenprefix'),
             data=test_value,
+            format='json',
         )
         self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
