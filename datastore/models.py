@@ -36,8 +36,8 @@ class DataStorePermission(models.Model):
 def related_document_path(instance, filename):
     filename = Path(filename)
     return (f'documents/'
-            f'{instance.content_type.app_label}_{instance.content_type.model}'
-            f'/{instance.object_id}/{instance.key}{filename.suffix}')
+            f'{instance.content_type.app_label}_{instance.content_type.model}/'
+            f'{instance.object_id}/{instance.key}{filename.suffix}')
 
 
 class RelatedDocument(models.Model):

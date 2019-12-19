@@ -1,0 +1,61 @@
+dist: bionic
+sudo: required
+language: python
+python:
+- '3.6'
+- '3.7'
+- '3.8'
+
+env:
+  matrix:
+  - DJANGO_VERSION=2.2.*
+  - DJANGO_VERSION=dev
+
+services:
+- postgresql
+addons:
+  postgresql: '10'
+
+stages:
+- lint
+- test
+- deploy
+
+install:
+- pip install -e .[dev]
+- pip install coverage codecov
+- if [[ $DJANGO_VERSION == dev ]]; then pip install -e git+https://github.com/django/django@master#egg=django;
+  else pip install Django==$DJANGO_VERSION -U; fi
+
+before_script:
+- psql -c "CREATE USER travis_ci_test WITH ENCRYPTED PASSWORD 'travis_ci_test';" -U
+  postgres
+- psql -c "ALTER USER travis_ci_test WITH SUPERUSER;" -U postgres
+- psql -c 'CREATE DATABASE travis_ci_test WITH OWNER travis_ci_test;' -U postgres
+after_failure:
+- pip freeze
+script:
+- coverage run ./manage.py test
+- codecov
+jobs:
+  allow_failures:
+    - env: DJANGO_VERSION=dev
+  include:
+  - stage: lint
+    install:
+    - pip install flake8
+    before_script: skip
+    script:
+    - flake8 datastore
+  - stage: deploy
+    install: skip
+    before_script: skip
+    script: skip
+    deploy:
+      stage: deploy
+      provider: pypi
+      user: __token__
+      password:
+        secure: D9rzLpB+f+e3JK8VEymn2Kc5Z2387rmRv43S/NrPfkSaTgmY4L2dyCWzXSM8tVJ9iGeI/+Ys+HIU0WH3Q+yNbdF8gHnqY9zYiRwwt5tVCyw2rg4QEMJWRlL01ImOJVXCgkFoF1fpA4NDDFYBTt3Mnf+EjdRqzLJWXZ50CLN4/d24O6u12ARkh+Qr8mdhcDye4mBONRfYAeD/uja9obFnvpJTsKh0bk0Vu+nHeZeiC4f295OdzX9dbck7Y2Hoi6HYIMHixc7+7osAco8zWk+7SaH4/1Jj8uGMFqs1ulviYTnX0Smftwxp8ATqq/Adlq4nZk0MxDs5ZoHnb+xgqaPwuF0UATJNhe2vR/g7LHxicJH5PMM+mUXjSzeUovb7drvsTNCllEGZoKfNMMsAdBzy6U4Sqvkc2Wtw2im/z+916Ysr184+0zzBR8aJKDYqE6NlMP2YNQInnO1ghuXEABmSrZAWNBzzAQPjKpkGaYfe7SyNC//h93sHZDVpV3qYFro92fTPpaxD+VR4XFd6baemgBPx93dxcRdj2fNwtBQHEfJ1IqjYWY2qhAkCMdC7t4n4WKoOLByBlSm1GY9ukFjRnd1pQl6lI9H4ukbhfCqH2YKJdJ4HU5cWVEGOmoLJrKHB8gbtLYCRa295YS6Uus/WMFEdjwMt1FF8W5Z677R0+Tk=
+      on:
+        tags: true
