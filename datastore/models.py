@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -5,7 +7,7 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models.manager import BaseManager
 
-from datastore.managers import DataStoreQuerySet
+from .managers import DataStoreQuerySet
 
 
 class DataStore(models.Model):
@@ -32,9 +34,10 @@ class DataStorePermission(models.Model):
 
 
 def related_document_path(instance, filename):
+    filename = Path(filename)
     return (f'documents/'
             f'{instance.content_type.app_label}_{instance.content_type.model}'
-            f'/{instance.object_id}/{instance.key}')
+            f'/{instance.object_id}/{instance.key}{filename.suffix}')
 
 
 class RelatedDocument(models.Model):
@@ -43,6 +46,7 @@ class RelatedDocument(models.Model):
     object_id = models.PositiveIntegerField()
     linked_object = GenericForeignKey('content_type', 'object_id')
     document = models.FileField(upload_to=related_document_path, null=False)
+    properties = JSONField(default=dict)
 
     class Meta:
         ordering = ['key']

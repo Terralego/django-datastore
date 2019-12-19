@@ -3,6 +3,8 @@ import binascii
 import logging
 
 import magic
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import UploadedFile
 from django.db.models.fields.files import FieldFile
 from rest_framework import serializers
 
@@ -19,12 +21,14 @@ class FileBase64Field(serializers.FileField):
                 f'Expect a django FieldFile, instead get {type(value)}'
             )
 
-        with open(value.path, mode='rb') as f:
-            return (f'data:{magic.from_file(value.path, mime=True)};'
-                    f'base64,{(base64.b64encode(f.read())).decode("utf-8")}')
+        with value.open() as f:
+            content = f.read()
+            return (f'data:{magic.from_buffer(content, mime=True)};'
+                    f'base64,{(base64.b64encode(content)).decode("utf-8")}')
 
     def to_internal_value(self, data):
         try:
+            content_type = data.split(":", 1)[1].split(";", 1)[0]
             encoded = data.split(",", 1)[1]
 
         # Caught the error to log it then re-raised it
@@ -38,13 +42,14 @@ class FileBase64Field(serializers.FileField):
 
         else:
             try:
-
                 decoded = base64.b64decode(encoded)
+                return UploadedFile(
+                    ContentFile(decoded),
+                    content_type=content_type
+                )
             # Caught the error to log it then re-raised it
             except binascii.Error:
                 logger.warning(f'{data} is not a base64 format')
                 raise serializers.ValidationError(
                     f'expected a base64, get instead {type(data)}'
                 )
-
-        return decoded

@@ -1,12 +1,13 @@
-
 import os
 from setuptools import setup, find_packages
-import sys
 
 file_setup = os.path.abspath(os.path.dirname(__file__))
-import codecs
 
-requires = ['Django>=2.0,<2.1', 'djangorestframework>=3.7,<3.8', 'python-magic>=0.4,<0.5']
+requires = [
+    'Django>=2.0,<2.1',
+    'djangorestframework>=3.7,<3.8',
+    'python-magic>=0.4,<0.5',
+]
 
 setup(
         name='django-rest-datastore',

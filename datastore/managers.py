@@ -1,6 +1,6 @@
 from django.db.models import Q, QuerySet
 
-from datastore import models as ds_models
+from .models import DataStorePermission
 
 
 class DataStoreQuerySet(QuerySet):
@@ -9,7 +9,8 @@ class DataStoreQuerySet(QuerySet):
 
         return self.filter(prefixes)
 
-    def _get_user_prefixes_query(self, user, perms=None):
+    @staticmethod
+    def _get_user_prefixes_query(user, perms=None):
         prefixes_query = Q()
         query_args = {
             'group__in': user.groups.all(),
@@ -17,7 +18,7 @@ class DataStoreQuerySet(QuerySet):
         if perms:
             query_args['permission__in'] = perms
 
-        permissions = ds_models.DataStorePermission.objects.filter(**query_args)
+        permissions = DataStorePermission.objects.filter(**query_args)
         if not permissions:
             return Q(key=None)
 
