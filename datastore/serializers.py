@@ -23,6 +23,10 @@ class RelatedDocumentSerializer(serializers.ModelSerializer):
         fields = ('key', 'document', 'properties')
 
 
+class RelatedDocumentUrlSerializer(RelatedDocumentSerializer):
+    document = serializers.URLField(source='document.url')
+
+
 class RelatedDocumentPDFSerializer(RelatedDocumentSerializer):
     document = serializers.FileField(use_url=False)
 
