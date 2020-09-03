@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-0.1.2.dev0      (XXXX-XX-XX)
+0.1.2           (2020-09-03)
 ----------------------------
 
 * Create related document url serializer
