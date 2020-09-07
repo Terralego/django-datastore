@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-0.1.3.3         (2020-09-07)
+0.1.3.4         (2020-09-07)
 ----------------------------
 
 * Restore deployment with pypi provider
