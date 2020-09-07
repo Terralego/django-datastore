@@ -1,1 +1,6 @@
-include README.rst CHANGES.md LICENSE
+include *.md
+include *.rst
+include LICENSE
+recursive-include datastore *.md
+recursive-include datastore *.py
+recursive-exclude test_project *
