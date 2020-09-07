@@ -18,7 +18,7 @@ setup(
     long_description_content_type="text/markdown",
     license="MIT, see LICENSE file.",
     packages=find_packages(),
-    url='https://github.com/makinacorpus/django-datastore',
+    url='https://github.com/Terralego/django-datastore',
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
