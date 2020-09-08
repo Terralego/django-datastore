@@ -2,7 +2,7 @@ import logging
 
 from rest_framework import serializers
 
-from .fields import FileBase64Field
+from .fields import FileBase64Field, FileBase64UrlField
 from .models import DataStore, RelatedDocument
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ class RelatedDocumentSerializer(serializers.ModelSerializer):
 
 
 class RelatedDocumentUrlSerializer(RelatedDocumentSerializer):
-    document = serializers.URLField(source='document.url')
+    document = FileBase64UrlField()
 
 
 class RelatedDocumentPDFSerializer(RelatedDocumentSerializer):

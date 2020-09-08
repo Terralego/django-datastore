@@ -53,3 +53,8 @@ class FileBase64Field(serializers.FileField):
                 raise serializers.ValidationError(
                     f'expected a base64, get instead {type(data)}'
                 )
+
+
+class FileBase64UrlField(FileBase64Field):
+    def to_representation(self, value):
+        return value.url

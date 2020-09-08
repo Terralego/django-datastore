@@ -5,6 +5,7 @@ CHANGELOG
 0.1.4.dev0      (XXXX-XX-XX)
 ----------------------------
 
+* Fix: make it possible to read and write with the RelatedDocumentUrlSerializer
 
 0.1.3.4         (2020-09-07)
 ----------------------------
